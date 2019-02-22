@@ -50,13 +50,14 @@ frame.on("ready", function() {
     //let randomPoint = [630.8,-43.4,0,0,-161.3,7.6,161.3,-7.6];
     let c = 400;
 
-    interval (1000, function(){
+    interval (1500, function(){
         let pointY = rand(-60, 60);
-        let randomPoint = [c+=100,pointY,0,0,pointY/2,0,-pointY/2,0];
+        let randomPoint = [c+=100,pointY,0,0,-30,0,30,0];
+        groundPoints.shift();
         groundPoints.push(randomPoint);
-        // zog(groundPoints)
         ground.points = groundPoints;
         ground.update();
+        
         groundclone.points = groundPoints;
         groundclone.update();
     });
