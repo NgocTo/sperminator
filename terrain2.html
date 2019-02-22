@@ -46,7 +46,7 @@ frame.on("ready", function() {
     //[[controlX, controlY, circleX, circleY, rect1X, rect1Y, rect2X, rect2Y, controlType], [etc]]
     let groundPoints = [[-34.7,3.3,0,0,-30,0,30,0],[75,60,0,0,-30,0,30,0],[179.3,42.3,0,0,-30,0,30,0],[300.6,56.7,0,0,-68,30.4,68,-30.4]];
     let ground = new Squiggle({points: groundPoints, interactive:false}).pos(0,300);
-    let groundclone = ground.clone().pos(0, 100);
+    let groundclone = ground.clone().pos(30, 100);
     //let randomPoint = [630.8,-43.4,0,0,-161.3,7.6,161.3,-7.6];
     let c = 400;
 
