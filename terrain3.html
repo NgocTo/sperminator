@@ -31,14 +31,20 @@ var width = 1024;
 var height = 468;
 var color = "indianred"; // ZIM colors like green, blue, pink, faint, clear, etc. available globally
 var outerColor = dark; // any HTML colors like "violet", "#333", etc. fine to use
+var path = "assets/";
+var assets = ["power-bolt.png", "power-star.png"];
 
-var frame = new Frame(scaling, width, height, color, outerColor);
+var frame = new Frame(scaling, width, height, color, outerColor, assets, path);
 frame.on("ready", function() {
     zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
 
     var stage = frame.stage;
     var stageW = frame.width;
     var stageH = frame.height;
+
+
+    var bolt = frame.asset("power-bolt.png").sca(.1).pos(100,200);
+    var star = frame.asset("power-star.png").sca(.1).pos(100,100);
 
     // var physics = new Physics(0);
     // physics.drag();
