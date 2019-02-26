@@ -53,7 +53,8 @@ frame.on("ready", function() {
         .center()
         .addPhysics({angular:6}).control();
         // .force(0, -1);
-
+    var eyeBlack = new Circle(4, black).center(circle).mov(5,-6);
+    var eyeWhite = new Circle(2, white).center(circle).mov(6,-7).alp(0.9);
     var rect1 = new Rectangle({
         width: 50,
         color: white,
@@ -75,7 +76,7 @@ frame.on("ready", function() {
     var point1 = new Point(rect1.x + rect1.width/2, rect1.y);
     var point2 = new Point(rect1.x - rect1.width/2, rect1.y);
     var point3 = new Point(rect2.x - rect2.width/2, rect2.y);
-    // var data1 = [0, 0, ]
+
     physics.join(rect1, circle, point1, null, -60, 60, "revolute");
     physics.join(rect1, rect2, point2, null, -60, 60, "revolute");
     physics.join(rect2, rect3, point3, null, -60, 60, "revolute");
@@ -134,7 +135,7 @@ frame.on("ready", function() {
 
 // var squiggle = new Squiggle({
 //     points: [[0,0,0,0,-30,0,30,0],[75,60,0,0,-30,0,30,0],[150,0,0,0,-30,0,30,0],[225,60,0,0,-30,0,30,0],[300,0,0,0,-30,0,30,0]]
- 
+
 // }).loc(220,175);//.place()//.outline(); // .loc(156,284);//use place();
 
 // zog(squiggle);
