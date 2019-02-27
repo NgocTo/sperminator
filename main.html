@@ -51,11 +51,11 @@ frame.on("ready", function() {
 
     // var physics = new Physics(0);
     // physics.drag();
-
+    var physics = new Physics(0);
     //[[controlX, controlY, circleX, circleY, rect1X, rect1Y, rect2X, rect2Y, controlType], [etc]]
     let groundPoints = [[stageW*-.25,56.7,0,0,-68,30.4,68,-30.4],[0.7,3.3,0,0,-30,0,30,0],[stageW*.25,60,0,0,-30,0,30,0],[stageW*.50,-10,0,0,-30,0,30,0],[stageW*.75,-28.3,0,0,-30,0,30,0],[stageW,56.7,0,0,-68,30.4,68,-30.4]];
-    let ground = new Squiggle({points: groundPoints, interactive:false, color: "firebrick"}).pos(stageW*.25,300);
-    let groundclone = ground.clone().pos(stageW*.25, 100);
+    let ground = new Squiggle({points: groundPoints, interactive:false, color: "firebrick"}).pos(stageW*.25,300).addPhysics();
+    let groundclone = ground.clone().pos(stageW*.25, 100).addPhysics();
 
     interval (3000, function(){
         let pointY = rand(-70, 70);
@@ -76,7 +76,7 @@ frame.on("ready", function() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var physics = new Physics(0);
+    
 
     var circle = new Circle(20, white)
         .center()
@@ -142,8 +142,9 @@ frame.on("ready", function() {
         //     ]
     })
 
-   
-
+   circle.contact(function(){
+       console.log("hit")
+   });
 //////////////////////////////////////////
 
 
