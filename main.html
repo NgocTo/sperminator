@@ -46,6 +46,35 @@ frame.on("ready", function() {
     var angular = 5;
     
     
+    var bolt = frame.asset("power-bolt.png").sca(.1).pos(100,200);
+    var star = frame.asset("power-star.png").sca(.1).pos(100,100);
+
+    // var physics = new Physics(0);
+    // physics.drag();
+
+    //[[controlX, controlY, circleX, circleY, rect1X, rect1Y, rect2X, rect2Y, controlType], [etc]]
+    let groundPoints = [[stageW*-.25,56.7,0,0,-68,30.4,68,-30.4],[0.7,3.3,0,0,-30,0,30,0],[stageW*.25,60,0,0,-30,0,30,0],[stageW*.50,-10,0,0,-30,0,30,0],[stageW*.75,-28.3,0,0,-30,0,30,0],[stageW,56.7,0,0,-68,30.4,68,-30.4]];
+    let ground = new Squiggle({points: groundPoints, interactive:false, color: "firebrick"}).pos(stageW*.25,300);
+    let groundclone = ground.clone().pos(stageW*.25, 100);
+
+    interval (3000, function(){
+        let pointY = rand(-70, 70);
+        let randomPoint = [stageW+=stageW*.2,pointY,0,0,-30,0,30,0];
+        
+        groundPoints.push(randomPoint);
+        ground.points = groundPoints;
+        ground.update();
+        
+        groundclone.points = groundPoints;
+        groundclone.update();
+    });
+
+	    Ticker.add(function(){
+	        ground.x--;
+	        groundclone.x--;
+	    }, stage);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var physics = new Physics(0);
 
