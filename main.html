@@ -29,10 +29,12 @@
 var scaling = "fit"; // this will resize to fit inside the screen dimensions
 var width = 1024;
 var height = 468;
-var color = light; // ZIM colors like green, blue, pink, faint, clear, etc. available globally
+var color = "indianred"; // ZIM colors like green, blue, pink, faint, clear, etc. available globally
 var outerColor = dark; // any HTML colors like "violet", "#333", etc. fine to use
+var path = "assets/";
+var assets = ["power-bolt.png", "power-star.png"];
 
-var frame = new Frame(scaling, width, height, color, outerColor);
+var frame = new Frame(scaling, width, height, color, outerColor, assets, path);
 frame.on("ready", function() {
     zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
 
@@ -46,12 +48,19 @@ frame.on("ready", function() {
     var angular = 5;
     
     
+    // var bolt = frame.asset("power-bolt.png").sca(.1).pos(100,200);
+    // var star = frame.asset("power-star.png").sca(.1).pos(100,100);
+
+    // var physics = new Physics(0);
+    // physics.drag();
+    var physics = new Physics(0);
+    //[[controlX, controlY, circleX, circleY, rect1X, rect1Y, rect2X, rect2Y, controlType], [etc]]
     var bolt = frame.asset("power-bolt.png").sca(.1).pos(100,200);
     var star = frame.asset("power-star.png").sca(.1).pos(100,100);
 
     // var physics = new Physics(0);
     // physics.drag();
-    var physics = new Physics(0);
+
     //[[controlX, controlY, circleX, circleY, rect1X, rect1Y, rect2X, rect2Y, controlType], [etc]]
     let groundPoints = [[stageW*-.25,56.7,0,0,-68,30.4,68,-30.4],[0.7,3.3,0,0,-30,0,30,0],[stageW*.25,60,0,0,-30,0,30,0],[stageW*.50,-10,0,0,-30,0,30,0],[stageW*.75,-28.3,0,0,-30,0,30,0],[stageW,56.7,0,0,-68,30.4,68,-30.4]];
     let ground = new Squiggle({points: groundPoints, interactive:false, color: "firebrick"}).pos(stageW*.25,300).addPhysics(false);
