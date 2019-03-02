@@ -78,9 +78,9 @@ frame.on("ready", function() {
         groundclone.update();
     });
 
-	    Ticker.add(function(){
-	        ground.x--;
-	        groundclone.x--;
+	    physics.Ticker.add(function(){
+	        ground.body.x--;
+	        groundclone.body.x--;
 	    }, stage);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
