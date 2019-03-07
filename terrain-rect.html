@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Terrain Build</title>
+
+<!-- Welcome to ZIM at https://zimjs.com - Code Creativity!              	        -->
+<!-- ZIM runs on the HTML Canvas powered by JavaScript and CreateJS https://createjs.com -->
+<!-- Founded by Inventor Dan Zen - https://danzen.com - Canadian New Media Award Winner 	-->
+<!-- ZIM is free to use. You can donate to help improve ZIM at https://zimjs.com/donate 	-->
+
+<script src="https://d309knd7es5f10.cloudfront.net/createjs_1.1_min.js"></script>
+<script src="https://d309knd7es5f10.cloudfront.net/zim_10.js"></script>
+<!-- use zimjs.com/distill for minified individual functions! -->
+
+<!-- physics libraries -->
+<script src="https://d309knd7es5f10.cloudfront.net/Box2dWeb-2.1.a.3.min.js"></script>
+<script src="https://d309knd7es5f10.cloudfront.net/physics_2.0.js"></script>
+
+<script>
+
+// SCALING OPTIONS
+// scaling can have values as follows with full being the default
+// "fit"	sets canvas and stage to dimensions and scales to fit inside window size
+// "outside"	sets canvas and stage to dimensions and scales to fit outside window size
+// "full"	sets stage to window size with no scaling
+// "tagID"	add canvas to HTML tag of ID - set to dimensions if provided - no scaling
+
+var scaling = "fit"; // this will resize to fit inside the screen dimensions
+var width = 1024;
+var height = 468;
+var color = "indianred"; // ZIM colors like green, blue, pink, faint, clear, etc. available globally
+var outerColor = dark; // any HTML colors like "violet", "#333", etc. fine to use
+
+var frame = new Frame(scaling, width, height, color, outerColor);
+frame.on("ready", function() {
+    zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
+
+    var stage = frame.stage;
+    var stageW = frame.width;
+    var stageH = frame.height;
+
+    var physics = new Physics(0);
+    physics.drag();
+
+    var thickness = 5;
+    var linear = 5;
+    var angular = 5;
+    var border = [];
+    loop(22, function (i) {
+        var b = new Rectangle({
+            width: stageW*0.05,
+            color: dark,
+            height: thickness,
+            corner: thickness*0.5
+        }).pos(stageW*0.05*i-stageW*0.05,100).bot().addPhysics({linear:2, angular:0, maskBits:2});
+        b.endPoint = new Point(b.x + b.width, b.y + b.height/2);
+        border.push(b);
+    });
+
+    loop(22, function (i) {
+        physics.join(border[i], border[i+1], border[i].endPoint, null, -60, 60, "revolute");
+    })
+
+    border[5].animate({
+        props: {rotation: 30},
+        time: 1000,
+        loop: true,
+        rewind: true
+    })
+    var test = new Rectangle({
+        width: stageW*0.05,
+        color: dark,
+        height: thickness,
+        corner: thickness*0.5
+    }).pos(0,200).bot();
+    test.wiggle("y", 50, -10, 10, 300, 1000);
+    test.animate({
+        props: {rotation: 30},
+        time: 1000,
+        loop: true,
+        rewind: true
+    })
+    Ticker.add(function(){
+        // border[5].endPoint.y.wiggle("y", 50, -10, 10, 300, 1000);
+    }, stage);
+
+    stage.update(); // this is needed to show any changes
+
+}); // end of ready
+
+</script>
+
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+
+</head>
+
+<body>
+<!-- canvas with id="myCanvas" is made by zim Frame -->
+</body>
+</html>
