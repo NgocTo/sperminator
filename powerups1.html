@@ -110,22 +110,18 @@ frame.on("ready", ()=> {
         startPaused: true
    }).centerReg().bot();
 
-    function rainbowPowerOn(){
-        rainbowTrail.pauseEmitter(false);
+    function powerOn(name){
+        name.pauseEmitter(false);
     }
     
-    function rainbowPowerOff(){
-        rainbowTrail.pauseEmitter(true);
+    function powerOff(name){
+        name.pauseEmitter(true);
     }
 
-    function lightPowerOn(){
-        lightTrail.pauseEmitter(false);
-    }
-    
-    function lightPowerOff(){
-        lightTrail.pauseEmitter(true);
-    }
-    
+    // rainbowPowerUp.on("hit" function(){   //not proper syntax but just to remember I have to do this
+    //     powerOn(rainbowTrail);
+    // });
+
     ////////////TICKER/////////////////////
 
 
