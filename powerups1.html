@@ -88,6 +88,11 @@ frame.on("ready", ()=> {
     // physics.debug();
     physics.drag();
     
+    circle.contact(function(){
+       console.log("hit")
+       ground.impulse(0,100);
+    
+   });
 
 
     ////////////Power-up Emitters/////////////////////
@@ -102,7 +107,26 @@ frame.on("ready", ()=> {
         interval:50,
         gravity:0,
         sink: emitterSink,
+        startPaused: true
    }).centerReg().bot();
+
+    function rainbowPowerOn(){
+        rainbowTrail.pauseEmitter(false);
+    }
+    
+    function rainbowPowerOff(){
+        rainbowTrail.pauseEmitter(true);
+    }
+
+    function lightPowerOn(){
+        lightTrail.pauseEmitter(false);
+    }
+    
+    function lightPowerOff(){
+        lightTrail.pauseEmitter(true);
+    }
+    
+    ////////////TICKER/////////////////////
 
 
     physics.Ticker.add(function(){
@@ -110,15 +134,12 @@ frame.on("ready", ()=> {
         var point2 = new Point(rect1.x - rect1.width/2, rect1.y);
         var point3 = new Point(rect2.x - rect2.width/2, rect2.y);
         rainbowTrail.particles.y = circle.y-stageH/2;
-        rainbowTrail.particles.x = circle.x-stageW/2;
+        rainbowTrail.particles.x = circle.x-stageW/2;  ///should this bee attached to a function because we have many?
+        // lightTrail.particles.y = circle.y-stageH/2;
+        // lightTrail.particles.x = circle.x-stageW/2;
         rect3.force(-1);
     })
 
-    circle.contact(function(){
-       console.log("hit")
-       ground.impulse(0,100);
-    
-   });
 
     /////////////////// Egg /////////////////////
     
@@ -142,6 +163,28 @@ frame.on("ready", ()=> {
         stage.update();
     }
 
+    ///////////// END GAME /////////////////
+
+    var heart = new Blob({
+        interactive:false,
+        showControls:false,
+        color:"white",
+        points:[[0,-40.7,0,0,-57.3,-76.6,41.8,-80.3,"free"],[100,0,0,0,23.7,-45.4,-23.7,45.4,"mirror"],[0,100,0,0,0,0,0,0,"none"],[-100,0,0,0,21.9,48.2,-21.9,-48.2,"mirror"]]
+    }).sca(.5).alp(.2);
+
+    var heartEmitter = new Emitter({
+        obj:heart,
+        num:2,
+        life:2200,
+        interval:100,
+        gravity:0,
+        force:2,
+        startPaused: true
+   }).centerReg(egg).bot().mov(-50);
+   
+    function love(){
+        heartEmitter.pauseEmitter(false);
+    }
 
     //////////// IN PROGRESS /////////////////
    
@@ -155,33 +198,15 @@ frame.on("ready", ()=> {
    //    sink: emitterSink
    // }).centerReg().bot();
 
-   //  var heartEmitter = new Emitter({
-   //      obj:new Circle(40 ,red),
-   //  num:10,
-   //  life:1000,
-   //  interval:40,
-   //  gravity:0,
-   //  force:{min:2, max:10}
-   // }).centerReg(stage);
-   
-
-    // var circeSpread = new Emitter({
-    //     obj:[new Circle(10), new Rectangle(8,8)],
-    //     random:{
-    //         rotation:{min:0, max:360}, 
-    //         color:["orange", "red", "yellow"], 
-    //         scale:{min:.5, max:1},
-    //     },
-    //     gravity:0,
-    //     force:1,
-    //     num:50,
-    //     life:5000,
-    //     fade:false,
-    //     //trace:true, creates a line could be for tron like thing
-    //     shrink:false,
-    //     interval:{min:500, max:2000}   //this would be great code for popcorn
-    //     //if you made it rand(value, value) the particles would emit at the same speed each time but be a different speed each refresh
-    //     }).centerReg();
+   //  var lightTrail = new Emitter({
+   //    obj:new Circle({x:50, props:{alpha:.5}}),
+   //    num:10, // ten Sprites made every 20 ms for about 1000 particles
+   //    life:2000,
+   //    interval:20,
+   //    gravity:0,
+   //    force:2,
+   //    sink: emitterSink
+   // }).centerReg().bot();
 
     stage.update(); // this is needed to show any changes
 
