@@ -4,11 +4,10 @@
 <meta charset="utf-8" />
 <title>ZIM Frame - Fit Template</title>
 
-<!-- Welcome to ZIM at https://zimjs.com - Code Creativity!                              -->
+<!-- Welcome to ZIM at https://zimjs.com - Code Creativity!              	        -->
 <!-- ZIM runs on the HTML Canvas powered by JavaScript and CreateJS https://createjs.com -->
-<!-- Founded by Inventor Dan Zen - http://danzen.com - Canadian New Media Award Winner   -->
-<!-- ZIM is free to use. You can donate to help improve ZIM at https://zimjs.com/donate  -->
-
+<!-- Founded by Inventor Dan Zen - https://danzen.com - Canadian New Media Award Winner 	-->
+<!-- ZIM is free to use. You can donate to help improve ZIM at https://zimjs.com/donate 	-->
 
 <script src="https://d309knd7es5f10.cloudfront.net/createjs_1.1_min.js"></script>
 <script src="https://d309knd7es5f10.cloudfront.net/zim_10.js"></script>
@@ -17,6 +16,7 @@
 <!-- physics libraries -->
 <script src="https://d309knd7es5f10.cloudfront.net/Box2dWeb-2.1.a.3.min.js"></script>
 <script src="https://d309knd7es5f10.cloudfront.net/physics_2.0.js"></script>
+
 <script>
 
 // SCALING OPTIONS
@@ -28,29 +28,38 @@
 
 var scaling = "fit"; // this will resize to fit inside the screen dimensions
 var width = 1024;
-var height = 768;
-var color = "indianred"; // ZIM colors like green, blue, pink, faint, clear, etc.
-var outerColor = dark; // any HTML colors like "violet", "#333", etc. are fine to use
-
+var height = 468;
+var color = "indianred"; // ZIM colors like green, blue, pink, faint, clear, etc. available globally
+var outerColor = dark; // any HTML colors like "violet", "#333", etc. fine to use
+// var path = "assets/";
+// var assets = ["power-bolt.png", "power-star.png"];
+//var frame = new Frame(scaling, width, height, color, outerColor, assets, path);
 var frame = new Frame(scaling, width, height, color, outerColor);
-frame.on("ready", ()=> {
+frame.on("ready", function() {
     zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
 
     var stage = frame.stage;
     var stageW = frame.width;
     var stageH = frame.height;
 
-    // see https://zimjs.com/learn.html for video and code tutorials
-    // see https://zimjs.com/docs.html for documentation
-    // see https://zimjs.com/bits.html for 64 Interactive Media techniques
-    
-    // VARIABLES
-    var powerup;
+    ////////////VARIABLES/////////////////////
     var thickness = 5;
     var linear = 2;
     var angular = 0;
     var physics = new Physics(0);
-    // physics.debug();
+    
+    // var bolt = frame.asset("power-bolt.png").sca(.1).pos(100,200);
+    // var star = frame.asset("power-star.png").sca(.1).pos(100,100);
+
+    // var physics = new Physics(0);
+    // physics.drag();
+    //physics.debug();
+    //[[controlX, controlY, circleX, circleY, rect1X, rect1Y, rect2X, rect2Y, controlType], [etc]]
+  
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////Sperm/////////////////////
 
     var circle = new Circle(20, white)
         .center()
@@ -137,8 +146,8 @@ frame.on("ready", ()=> {
     }
 
     // circle.hitTestCircle(powerup, function(){  
-    //     powerOn(rainbowTrail);
-    //     rainbowSperm();
+        powerOn(rainbowTrail);
+        rainbowSperm();
     // });
 
     function powerTimeOut(name, color){
@@ -160,10 +169,7 @@ frame.on("ready", ()=> {
         // lightTrail.particles.y = circle.y-stageH/2;
         // lightTrail.particles.x = circle.x-stageW/2;
         rect3.force(-1);
-    })
-
-
-  
+    });
    
    ///////////////// Labels /////////////////////
   
@@ -210,27 +216,6 @@ frame.on("ready", ()=> {
         heartEmitter.pauseEmitter(false);
     }
 
-    //////////// IN PROGRESS /////////////////
-   
-   //  var inkTrail = new Emitter({
-   //    obj:new Circle({x:50, props:{alpha:.5}}),
-   //    num:10, // ten Sprites made every 20 ms for about 1000 particles
-   //    life:2000,
-   //    interval:20,
-   //    gravity:0,
-   //    force:2,
-   //    sink: emitterSink
-   // }).centerReg().bot();
-
-   //  var lightTrail = new Emitter({
-   //    obj:new Circle({x:50, props:{alpha:.5}}),
-   //    num:10, // ten Sprites made every 20 ms for about 1000 particles
-   //    life:2000,
-   //    interval:20,
-   //    gravity:0,
-   //    force:2,
-   //    sink: emitterSink
-   // }).centerReg().bot();
 
     stage.update(); // this is needed to show any changes
 
