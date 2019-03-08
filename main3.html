@@ -154,15 +154,18 @@ frame.on("ready", function() {
         sperms.push(sperm);
     });
     // able to remove the sperm from array but need to remove the sperm from stage
-    timeout(2000, function(){
+    interval(5000, function(){
         var lastSperm = sperms.pop();
         zog (lastSperm);
-        lastSperm.removePhysics();
+        lastSperm.head.removePhysics();
+        lastSperm.t1.removePhysics();
+        lastSperm.t2.removePhysics();
+        lastSperm.t3.removePhysics();
         lastSperm.head.removeFrom();
         lastSperm.t1.removeFrom();
         lastSperm.t2.removeFrom();
         lastSperm.t3.removeFrom();
-    })
+    });
 
     // loop(tempHeads, function(spermHead){
     //     if (spermHead.x < 0 || spermHead.x > stageW){
