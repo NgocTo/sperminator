@@ -116,19 +116,19 @@ frame.on("ready", function() {
             width: 40,
             color: white,
             height: thickness,
-        }).centerReg().mov(-stageW/2-20, 0).cur().bot().addPhysics({linear, angular});
+        }).centerReg().mov(-stageW/2-20, 0).cur().bot().addPhysics({linear, angular, maskBits:2});
 
         var t2 = sperm.t2 = new Rectangle({
             width: 40,
             color: white,
             height: thickness,
-        }).centerReg().mov(-stageW/2-60, 0).cur().bot().addPhysics({linear, angular});
+        }).centerReg().mov(-stageW/2-60, 0).cur().bot().addPhysics({linear, angular, maskBits:2});
 
         var t3 = sperm.t3 = new Rectangle({
             width: 40,
             color: white,
             height: thickness,
-        }).centerReg().mov(-stageW/2-100, 0).cur().bot().addPhysics({linear, angular});
+        }).centerReg().mov(-stageW/2-100, 0).cur().bot().addPhysics({linear, angular, maskBits:2});
 
         var p1 = new Point(t1.x + t1.width/2, t1.y);
         var p2 = new Point(t1.x - t1.width/2, t1.y);
@@ -140,11 +140,11 @@ frame.on("ready", function() {
     }
 
     function throwSperm(){
-        sperm.head.impulse(rand(10,40), rand(-20,20));
+        sperm.head.impulse(rand(10,40), rand(-10,10));
     }
 
     ////////////Creating other sperm/////////////////////
-    interval(1000, function(){
+    interval(3000, function(){
         makeSperm();
         throwSperm();
         sperms.push(sperm);
@@ -214,8 +214,8 @@ frame.on("ready", function() {
     }
 
     // circle.hitTestCircle(powerup, function(){
-        powerOn(rainbowTrail);
-        rainbowSperm();
+        // powerOn(rainbowTrail);
+        // rainbowSperm();
     // });
 
     function powerTimeOut(name, color){
@@ -226,13 +226,14 @@ frame.on("ready", function() {
     }
 
     ////////////BORDER /////////////////////
+
     function makeBorder(yPos, fromBottom) {
         var border = [];
         // create rectangles
         loop(amount, function (i) {
             var b = new Rectangle({
                 width: borderWidth,
-                color: dark,
+                color: "firebrick",
                 height: thickness,
                 corner: thickness*0.5
             })
@@ -296,11 +297,17 @@ frame.on("ready", function() {
 
     /////////////////// Egg /////////////////////
 
-    let egg = new Circle(300, red, "firebrick",10).alp(.8).center().mov(stageW/2);
+
+    let egg = new Circle(300, red, "firebrick",10).alp(.8).center().mov(stageW/2).addPhysics({restitution:.5});
     new Circle(250, "firebrick").alp(.5).center(egg);
 
     ///////////// END GAME /////////////////
-
+    
+    timeout(3000, function(){
+        egg.impulse(-10);
+        zog("dd");
+    });
+    
     var heart = new Blob({
         interactive:false,
         showControls:false,
