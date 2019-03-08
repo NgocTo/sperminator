@@ -298,16 +298,21 @@ frame.on("ready", function() {
     /////////////////// Egg /////////////////////
 
 
-    let egg = new Circle(300, red, "firebrick",10).alp(.8).center().mov(stageW/2).addPhysics({restitution:.5});
+    let egg = new Circle(200, red, "firebrick",10).alp(.8).center().mov(stageW/2+300).addPhysics({restitution:.5, maskBits:2});
     new Circle(250, "firebrick").alp(.5).center(egg);
 
     ///////////// END GAME /////////////////
     
     timeout(3000, function(){
-        egg.impulse(-10);
-        zog("dd");
+        egg.impulse(-600);
     });
-    
+
+    circle.contact(function (obj) {
+        if (obj == egg) {
+        replaceText();
+        }
+    });
+
     var heart = new Blob({
         interactive:false,
         showControls:false,
