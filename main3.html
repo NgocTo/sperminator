@@ -43,36 +43,33 @@ frame.on("ready", function() {
     var stageH = frame.height;
 
     ////////////VARIABLES/////////////////////
+    var amount = 5; // number of rectangles in one border
+    var borderWidth = stageW*(1/(amount-1)); // width of rectangle
     var thickness = 5;
     var linear = 2;
     var angular = 0;
-    var physics = new Physics(0);
-    var sperm = { 
+    var sperm = {
         head: undefined,
         t1: undefined,
         t2: undefined,
         t3: undefined,
     };
     var sperms = [];
-
-    physics.remove(physics.borderLeft);
-    physics.remove(physics.borderRight)
     // var bolt = frame.asset("power-bolt.png").sca(.1).pos(100,200);
     // var star = frame.asset("power-star.png").sca(.1).pos(100,100);
-
-    // var physics = new Physics(0);
-    // physics.drag();
-    //physics.debug();
-    //[[controlX, controlY, circleX, circleY, rect1X, rect1Y, rect2X, rect2Y, controlType], [etc]]
-  
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    var physics = new Physics(0);
+    physics.remove(physics.borderLeft);
+    physics.remove(physics.borderRight)
+    physics.drag();
+    // physics.debug();
+    makeBorder(100);
+    makeBorder(100, true);
 
     ////////////Player Sperm/////////////////////
 
     var circle = new Circle(20, white)
         .center()
-        .addPhysics({angular:10}).control({speed:10}); //horizontal:false
+        .addPhysics({angular:10,categoryBits:2}).control({speed:10}); //horizontal:false
         // .force(0, -1);
     var eyeBlack = new Circle(4, black).center(circle).mov(5,-6);
     var eyeWhite = new Circle(2, white).center(circle).mov(6,-7).alp(0.9);
@@ -103,9 +100,7 @@ frame.on("ready", function() {
     physics.join(rect2, rect3, point3, null, -30, 30, "revolute");
 
     var physics = circle.physics;
-    // physics.debug();
-    physics.drag();
-    
+
     // circle.contact(function(){
     //    console.log("hit")
     //    ground.impulse(0,100);
@@ -115,7 +110,7 @@ frame.on("ready", function() {
     function makeSperm(){
         var head = sperm.head = new Circle(15, white)
             .center().mov(-stageW/2)
-            .addPhysics({angular:10}); //horizontal:false
+            .addPhysics({angular:10,categoryBits:2}); //horizontal:false
             // .force(0, -1);
         var t1 = sperm.t1 = new Rectangle({
             width: 40,
@@ -143,11 +138,11 @@ frame.on("ready", function() {
         physics.join(t1, t2, p2, null, -30, 30, "revolute");
         physics.join(t2, t3, p3, null, -30, 30, "revolute");
     }
-    
+
     function throwSperm(){
         sperm.head.impulse(rand(10,40), rand(-20,20));
     }
-    
+
     ////////////Creating other sperm/////////////////////
     interval(1000, function(){
         makeSperm();
@@ -155,16 +150,19 @@ frame.on("ready", function() {
         sperms.push(sperm);
     });
     // able to remove the sperm from array but need to remove the sperm from stage
-    timeout(2000, function(){
+    interval(5000, function(){
         var lastSperm = sperms.pop();
         zog (lastSperm);
-        lastSperm.removePhysics();
+        lastSperm.head.removePhysics();
+        lastSperm.t1.removePhysics();
+        lastSperm.t2.removePhysics();
+        lastSperm.t3.removePhysics();
         lastSperm.head.removeFrom();
         lastSperm.t1.removeFrom();
         lastSperm.t2.removeFrom();
         lastSperm.t3.removeFrom();
-    })
-    
+    });
+
     // loop(tempHeads, function(spermHead){
     //     if (spermHead.x < 0 || spermHead.x > stageW){
     //         spermHead.removeFrom(stage);
@@ -178,7 +176,7 @@ frame.on("ready", function() {
 
     let emitterSink = new Rectangle(10,10).pos(-10, stageH/2).drag();
     emitterSink.wiggle("y", stageH/2, 20, 40, 400, 600);
-    
+
     var rainbowTrail = new Emitter({
         obj:[new Rectangle(30, 10)],
         random:{
@@ -194,9 +192,9 @@ frame.on("ready", function() {
    }).centerReg().bot();
 
     function powerOn(name){
-        name.pauseEmitter(false); 
+        name.pauseEmitter(false);
     }
-    
+
     function powerOff(name){
         name.pauseEmitter(true);
     }
@@ -215,7 +213,7 @@ frame.on("ready", function() {
         circle.color = color;
     }
 
-    // circle.hitTestCircle(powerup, function(){  
+    // circle.hitTestCircle(powerup, function(){
         powerOn(rainbowTrail);
         rainbowSperm();
     // });
@@ -226,7 +224,45 @@ frame.on("ready", function() {
         colorSperm(color);
     });
     }
-        
+
+    ////////////BORDER /////////////////////
+    function makeBorder(yPos, fromBottom) {
+        var border = [];
+        // create rectangles
+        loop(amount, function (i) {
+            var b = new Rectangle({
+                width: borderWidth,
+                color: dark,
+                height: thickness,
+                corner: thickness*0.5
+            })
+                .centerReg()
+                .pos(borderWidth*i-borderWidth/2, yPos, null, fromBottom).bot()
+                .addPhysics({
+                    linear:2,
+                    angular:1,
+                    density:0.8,
+                    restitution: 1,
+                    maskBits:2
+                });
+            b.startPoint = new Point(b.x - b.width/2, b.y);
+            b.endPoint = new Point(b.x + b.width/2, b.y);
+            border.push(b);
+        });
+        // join rectanges with 2d linkages
+        loop(amount, function (i) {
+            physics.join(border[i], border[i+1], border[i].endPoint, null, -10, 10, "revolute");
+        })
+        // lock start point and end point of the border
+        var startLock = new Circle(5, dark).loc(border[0].startPoint).addPhysics(false);
+        var endLock = new Circle(5, dark).loc(border[amount-1].endPoint).addPhysics(false);
+        physics.join(startLock, border[0], border[0].startPoint, null, -10, 10, "revolute");
+        physics.join(endLock, border[amount-1], border[amount-1].endPoint, null, -10, 10, "revolute");
+        // create random impulse to move the border
+        interval(1000, function () {
+            border[rand(0,4)].impulse(null,rand(border[0].y-100, border[0].y+100));
+        }, null, true)
+    }
     ////////////TICKER/////////////////////
 
 
@@ -240,18 +276,18 @@ frame.on("ready", function() {
         // lightTrail.particles.x = circle.x-stageW/2;
         rect3.force(-1);
     });
-   
+
    ///////////////// Labels /////////////////////
-  
+
     let label = new Label({
         text:"",
         size:"40",
         color:"white",
         fontOptions:"italic bold"
     });
-    
+
     let labelText = series("Use the arrrow keys to swim", "Get power-ups and avoid the competition", "Better luck next time, champ");
-   
+
     function replaceText(){
         label.text = labelText();
         label.centerReg().mov(0,300);
@@ -259,10 +295,10 @@ frame.on("ready", function() {
     }
 
     /////////////////// Egg /////////////////////
-    
+
     let egg = new Circle(300, red, "firebrick",10).alp(.8).center().mov(stageW/2);
     new Circle(250, "firebrick").alp(.5).center(egg);
-    
+
     ///////////// END GAME /////////////////
 
     var heart = new Blob({
@@ -281,7 +317,7 @@ frame.on("ready", function() {
         force:2,
         startPaused: true
    }).centerReg(egg).bot().mov(-50);
-   
+
     function love(){
         heartEmitter.pauseEmitter(false);
     }

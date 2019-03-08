@@ -43,44 +43,52 @@ frame.on("ready", function() {
     var physics = new Physics(0);
     physics.drag();
 
-    var thickness = 5;
+    // physics.debug();
+    var amount = 5; // number of rectangles in one border
+    var thickness = 5; // rectangles thickness
+    var borderWidth = stageW*(1/(amount-1)); // width of rectangle
     var linear = 5;
     var angular = 5;
-    var border = [];
-    loop(22, function (i) {
-        var b = new Rectangle({
-            width: stageW*0.05,
-            color: dark,
-            height: thickness,
-            corner: thickness*0.5
-        }).pos(stageW*0.05*i-stageW*0.05,100).bot().addPhysics({linear:2, angular:0, maskBits:2});
-        b.endPoint = new Point(b.x + b.width, b.y + b.height/2);
-        border.push(b);
-    });
 
-    loop(22, function (i) {
-        physics.join(border[i], border[i+1], border[i].endPoint, null, -60, 60, "revolute");
-    })
-
-    border[5].animate({
-        props: {rotation: 30},
-        time: 1000,
-        loop: true,
-        rewind: true
-    })
-    var test = new Rectangle({
-        width: stageW*0.05,
-        color: dark,
-        height: thickness,
-        corner: thickness*0.5
-    }).pos(0,200).bot();
-    test.wiggle("y", 50, -10, 10, 300, 1000);
-    test.animate({
-        props: {rotation: 30},
-        time: 1000,
-        loop: true,
-        rewind: true
-    })
+    makeBorder(100);
+    makeBorder(100, true);
+    function makeBorder(yPos, fromBottom) {
+        var border = [];
+        // create rectangles
+        loop(amount, function (i) {
+            var b = new Rectangle({
+                width: borderWidth,
+                color: dark,
+                height: thickness,
+                corner: thickness*0.5
+            })
+                .centerReg()
+                .pos(borderWidth*i-borderWidth/2, yPos, null, fromBottom).bot()
+                .addPhysics({
+                    linear:2,
+                    angular:1,
+                    density:0.8,
+                    restitution: 1,
+                    maskBits:2
+                });
+            b.startPoint = new Point(b.x - b.width/2, b.y);
+            b.endPoint = new Point(b.x + b.width/2, b.y);
+            border.push(b);
+        });
+        // join rectanges with 2d linkages
+        loop(amount, function (i) {
+            physics.join(border[i], border[i+1], border[i].endPoint, null, -10, 10, "revolute");
+        })
+        // lock start point and end point of the border
+        var startLock = new Circle(5, dark).loc(border[0].startPoint).addPhysics(false);
+        var endLock = new Circle(5, dark).loc(border[amount-1].endPoint).addPhysics(false);
+        physics.join(startLock, border[0], border[0].startPoint, null, -10, 10, "revolute");
+        physics.join(endLock, border[amount-1], border[amount-1].endPoint, null, -10, 10, "revolute");
+        // create random impulse to move the border
+        interval(1000, function () {
+            border[rand(0,4)].impulse(null,rand(border[0].y-100, border[0].y+100));
+        }, null, true)
+    }
     Ticker.add(function(){
         // border[5].endPoint.y.wiggle("y", 50, -10, 10, 300, 1000);
     }, stage);
