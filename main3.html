@@ -87,6 +87,7 @@ frame.on("ready", function() {
         });
     }
     replaceText(0);
+    
     ////////////Player Sperm/////////////////////
 
     var circle = new Circle(20, white)
@@ -125,11 +126,6 @@ frame.on("ready", function() {
     physics.join(rect2, rect3, point3, null, -30, 30, "revolute");
 
     var physics = circle.physics;
-
-    // circle.contact(function(){
-    //    console.log("hit")
-    //    ground.impulse(0,100);
-    // });
 
     ////////////Other Sperm/////////////////////
     function makeSperm(){
@@ -284,6 +280,7 @@ frame.on("ready", function() {
             border[rand(0,4)].impulse(null,rand(border[0].y-100, border[0].y+100));
         }, null, true)
     }
+    
     ////////////TICKER/////////////////////
 
 
@@ -303,11 +300,7 @@ frame.on("ready", function() {
     let egg = new Circle(200, red, "firebrick",10).alp(.8).center().mov(stageW/2+300).addPhysics({restitution:.5, maskBits:2});
     new Circle(250, "firebrick").alp(.5).center(egg);
 
-    ///////////// END GAME /////////////////
-    
-    timeout(4000, function(){
-        egg.impulse(-600);
-    });
+    ///////////// Hit Tests /////////////////
 
     circle.contact(function(obj, body){
         if (body == egg.body && circle.powered == "true"){
@@ -317,8 +310,8 @@ frame.on("ready", function() {
             replaceText(2);
         } else if (body == egg.body){
         replaceText(1);
-        circle.impulse(-200);
-        powerup.impulse(-200);
+        circle.impulse(-40);
+        powerup.impulse(-200,10);
         }
         if (body == powerup.body){
         powerup.removePhysics().animate({props: {alpha:0}});
@@ -328,7 +321,12 @@ frame.on("ready", function() {
         egg.maskBits = 1;
         }
     });
-
+    
+    ///////////// END GAME /////////////////
+    
+    timeout(4000, function(){
+        egg.impulse(-600);
+    });
     var heart = new Blob({
         interactive:false,
         showControls:false,
