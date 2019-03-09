@@ -65,6 +65,28 @@ frame.on("ready", function() {
     makeBorder(100);
     makeBorder(100, true);
 
+
+    ///////////////// Labels /////////////////////
+
+    let label = new Label({
+        text:"",
+        size:"30",
+        color:"white",
+        fontOptions:"italic bold"
+    }).alp(0);
+
+    let labelText = series("Use the arrrow keys to swim", "Better luck next time, champ");
+
+    function replaceText(){
+        label.text = labelText();
+        label.centerReg().mov(0,200);
+        label.animate({props:{alpha:1}})
+        stage.update();
+        timeout(3000, function(){
+            label.animate({props:{alpha:0}})
+        });
+    }
+    replaceText();
     ////////////Player Sperm/////////////////////
 
     var circle = new Circle(20, white)
@@ -213,7 +235,7 @@ frame.on("ready", function() {
         circle.color = color;
     }
 
-    // circle.hitTestCircle(powerup, function(){
+    // circle.contact(powerup, function(){
         // powerOn(rainbowTrail);
         // rainbowSperm();
     // });
@@ -275,25 +297,9 @@ frame.on("ready", function() {
         rainbowTrail.particles.x = circle.x-stageW/2;  ///should this bee attached to a function because we have many?
         // lightTrail.particles.y = circle.y-stageH/2;
         // lightTrail.particles.x = circle.x-stageW/2;
-        rect3.force(-1);
+        rect3.force(-5);
     });
 
-   ///////////////// Labels /////////////////////
-
-    let label = new Label({
-        text:"",
-        size:"40",
-        color:"white",
-        fontOptions:"italic bold"
-    });
-
-    let labelText = series("Use the arrrow keys to swim", "Get power-ups and avoid the competition", "Better luck next time, champ");
-
-    function replaceText(){
-        label.text = labelText();
-        label.centerReg().mov(0,300);
-        stage.update();
-    }
 
     /////////////////// Egg /////////////////////
 
@@ -307,8 +313,8 @@ frame.on("ready", function() {
         egg.impulse(-600);
     });
 
-    circle.contact(function (obj) {
-        if (obj == egg) {
+    circle.contact(function(obj, body){
+        if (body == egg.body){
         replaceText();
         }
     });
