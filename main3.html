@@ -31,10 +31,10 @@ var width = 1024;
 var height = 468;
 var color = "indianred"; // ZIM colors like green, blue, pink, faint, clear, etc. available globally
 var outerColor = dark; // any HTML colors like "violet", "#333", etc. fine to use
-// var path = "assets/";
-// var assets = ["power-bolt.png", "power-star.png"];
-//var frame = new Frame(scaling, width, height, color, outerColor, assets, path);
-var frame = new Frame(scaling, width, height, color, outerColor);
+var path = "assets/";
+var assets = ["power-star.png"];
+var frame = new Frame(scaling, width, height, color, outerColor, assets, path);
+// var frame = new Frame(scaling, width, height, color, outerColor);
 frame.on("ready", function() {
     zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
 
@@ -55,8 +55,7 @@ frame.on("ready", function() {
         t3: undefined,
     };
     var sperms = [];
-    // var bolt = frame.asset("power-bolt.png").sca(.1).pos(100,200);
-    // var star = frame.asset("power-star.png").sca(.1).pos(100,100);
+
     var physics = new Physics(0);
     physics.remove(physics.borderLeft);
     physics.remove(physics.borderRight)
@@ -65,7 +64,8 @@ frame.on("ready", function() {
     makeBorder(100);
     makeBorder(100, true);
 
-
+    var powerup = new Circle(200, red).sca(.1).center().mov(stageW/2+100).addPhysics({linear, angular:1});
+    var img = frame.asset("power-star.png").center(powerup);
     ///////////////// Labels /////////////////////
 
     let label = new Label({
@@ -75,24 +75,27 @@ frame.on("ready", function() {
         fontOptions:"italic bold"
     }).alp(0);
 
-    let labelText = series("Use the arrrow keys to swim", "Better luck next time, champ");
+    let labelText = ["swim to the egg!", "Maybe this will help","it's a date"];
 
-    function replaceText(){
-        label.text = labelText();
+    function replaceText(a){
+        label.text = labelText[a];
         label.centerReg().mov(0,200);
         label.animate({props:{alpha:1}})
         stage.update();
-        timeout(3000, function(){
+        timeout(3500, function(){
             label.animate({props:{alpha:0}})
         });
     }
-    replaceText();
+    replaceText(0);
     ////////////Player Sperm/////////////////////
 
     var circle = new Circle(20, white)
         .center()
         .addPhysics({angular:10,categoryBits:2}).control({speed:10}); //horizontal:false
         // .force(0, -1);
+
+    circle.powered = "false";
+
     var eyeBlack = new Circle(4, black).center(circle).mov(5,-6);
     var eyeWhite = new Circle(2, white).center(circle).mov(6,-7).alp(0.9);
     var rect1 = new Rectangle({
@@ -172,18 +175,18 @@ frame.on("ready", function() {
         sperms.push(sperm);
     });
     // able to remove the sperm from array but need to remove the sperm from stage
-    interval(5000, function(){
-        var lastSperm = sperms.pop();
-        zog (lastSperm);
-        lastSperm.head.removePhysics();
-        lastSperm.t1.removePhysics();
-        lastSperm.t2.removePhysics();
-        lastSperm.t3.removePhysics();
-        lastSperm.head.removeFrom();
-        lastSperm.t1.removeFrom();
-        lastSperm.t2.removeFrom();
-        lastSperm.t3.removeFrom();
-    });
+    // interval(5000, function(){
+    //     var lastSperm = sperms.pop();
+    //     zog (lastSperm);
+    //     lastSperm.head.removePhysics();
+    //     lastSperm.t1.removePhysics();
+    //     lastSperm.t2.removePhysics();
+    //     lastSperm.t3.removePhysics();
+    //     lastSperm.head.removeFrom();
+    //     lastSperm.t1.removeFrom();
+    //     lastSperm.t2.removeFrom();
+    //     lastSperm.t3.removeFrom();
+    // });
 
     // loop(tempHeads, function(spermHead){
     //     if (spermHead.x < 0 || spermHead.x > stageW){
@@ -235,17 +238,12 @@ frame.on("ready", function() {
         circle.color = color;
     }
 
-    // circle.contact(powerup, function(){
-        // powerOn(rainbowTrail);
-        // rainbowSperm();
+    // function powerTimeOut(name, color){
+    //     timeout(5000, function(){
+    //     powerOff(name);
+    //     colorSperm(color);
     // });
-
-    function powerTimeOut(name, color){
-        timeout(5000, function(){
-        powerOff(name);
-        colorSperm(color);
-    });
-    }
+    // }
 
     ////////////BORDER /////////////////////
 
@@ -294,9 +292,7 @@ frame.on("ready", function() {
         var point2 = new Point(rect1.x - rect1.width/2, rect1.y);
         var point3 = new Point(rect2.x - rect2.width/2, rect2.y);
         rainbowTrail.particles.y = circle.y-stageH/2;
-        rainbowTrail.particles.x = circle.x-stageW/2;  ///should this bee attached to a function because we have many?
-        // lightTrail.particles.y = circle.y-stageH/2;
-        // lightTrail.particles.x = circle.x-stageW/2;
+        rainbowTrail.particles.x = circle.x-stageW/2; 
         rect3.force(-5);
     });
 
@@ -309,13 +305,27 @@ frame.on("ready", function() {
 
     ///////////// END GAME /////////////////
     
-    timeout(3000, function(){
+    timeout(4000, function(){
         egg.impulse(-600);
     });
 
     circle.contact(function(obj, body){
-        if (body == egg.body){
-        replaceText();
+        if (body == egg.body && circle.powered == "true"){
+            love();
+            powerOff(rainbowTrail);
+            colorSperm("white");
+            replaceText(2);
+        } else if (body == egg.body){
+        replaceText(1);
+        circle.impulse(-200);
+        powerup.impulse(-200);
+        }
+        if (body == powerup.body){
+        powerup.removePhysics().animate({props: {alpha:0}});
+        powerOn(rainbowTrail);
+        rainbowSperm();
+        circle.powered = "true";
+        egg.maskBits = 1;
         }
     });
 
